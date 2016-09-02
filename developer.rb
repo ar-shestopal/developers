@@ -1,4 +1,7 @@
 class Developer
+
+  [:well, :bad].each { |sym| define_method(sym) { return sym } }
+
   def initialize
     #default values
     @crazy = true
@@ -18,7 +21,8 @@ class Developer
   #or not.love :ruby, :rails
   def love(*args)
     love = @love.to_sym
-    return self if args.flatten!.include?(love) || args.empty?
+    args = args.flatten.map(&:to_sym)
+    self if args.include?(love) || args.empty?
   end
 
   # alias for self
@@ -34,6 +38,7 @@ class Developer
 
   # allows call like 'skill_level.not :low'
   def not(*args)
+    return self if args.empty?
     self unless equal_to_previous_call(*args)
   end
 
@@ -51,19 +56,9 @@ class Developer
     end
   end
 
-  #syntactic shugar makes call like 'work well' to run
-  def well
-    :well
-  end
-
-  #syntactic shugar makes call like 'work bad' to run
-  def bad
-    :bad
-  end
-
   def method_missing(sym, *args, &block)
-    # method like yuor, her, his, its
-    if /^\w+[rs]$/ =~ sym.to_s && args[0]
+    arg = args[0] || args.empty? #check if argument is truthy
+    if /^\w+[rs]$/ =~ sym.to_s && arg
       self
     end
   end
@@ -78,7 +73,6 @@ class Developer
     method_names = instance_variables.map { |iv| iv.to_s[1..-1] }
     method_names.each do |method_name|
       self.class.send(:define_method, method_name) do |*args|
-
         reader_method_body(args, method_name)
       end
     end

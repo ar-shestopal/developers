@@ -8,8 +8,8 @@ describe Developer do
   it { should respond_to(:skill_level) }
   it { should respond_to(:want) }
 
-  # it { should respond_to(:is) }
-  # it { should respond_to(:not) }
+  it { should respond_to(:is) }
+  it { should respond_to(:not) }
 
   describe 'methods' do
     before(:each) do
@@ -70,6 +70,21 @@ describe Developer do
         end
 
         expect(check).to be_truthy
+      end
+    end
+  end
+
+  describe 'final code' do
+    it 'runs test assignment code' do
+      [Developer.new].select do |you|
+        you.are.crazy
+        .and { your.skill_level is :high }
+        .and { you.are.not.in :plumbee }
+        .and { you.love 'ruby', 'rails' }
+        .and { want 'fun', 'money' }
+        .and.if you do
+          your work well
+        end
       end
     end
   end
