@@ -11,6 +11,8 @@ Given DtaBase code ignores platform and region, so I ignored them too, but it
 would be logical to use platform as condition for #love and region for #in.
 
 To make Developer's methods chainable, each of them returns wether self or nil.
+Howeveer this leads to NoMethodError if nil is returned in a middle of a method
+chain.
 
 I decided to set default value for each instance variable. This makes code more
 readable and faster to test, despite the fact that it adds few lines of code..

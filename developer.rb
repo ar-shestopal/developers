@@ -7,9 +7,10 @@ class Developer
     @crazy = true
     @skill_level = :high
     @in = :london
-    @love = :ruby
+    @platform = :ruby
     @want = ['fun', 'money']
     @work = :well
+    @positive = true
     define_reader_methods
   end
 
@@ -20,9 +21,8 @@ class Developer
   #overriding love method to allow syntax like this 'love :ruby, rails'
   #or not.love :ruby, :rails
   def love(*args)
-    love = @love.to_sym
     args = args.flatten.map(&:to_sym)
-    self if args.include?(love) || args.empty?
+    self if args.include?(@platform.to_sym) || args.empty?
   end
 
   # alias for self
@@ -38,6 +38,8 @@ class Developer
 
   # allows call like 'skill_level.not :low'
   def not(*args)
+    @positive = false
+
     return self if args.empty?
     self unless equal_to_previous_call(*args)
   end
@@ -85,7 +87,9 @@ class Developer
     instance_exec do
       value = instance_variable_get("@#{method_name}")
       @prev_result = value if value == args || args.empty?
-      self
+      result = check_positive(args, value)
+      reset_positive
+      result
     end
   end
 
@@ -93,5 +97,23 @@ class Developer
     args.flatten
     args = args.first if args.size == 1
     @prev_result == args
+  end
+
+  def check_value(args, value)
+    value == args || args.empty?
+  end
+
+  def check_positive(args, value)
+    if check_value(args, value) && @positive
+      self
+    elsif !check_value(args, value) && !@positive
+      self
+    else
+      nil
+    end
+  end
+
+  def reset_positive
+    @positive = true
   end
 end

@@ -75,17 +75,24 @@ describe Developer do
   end
 
   describe 'final code' do
+    before(:each) do
+      @developer = Developer.new
+      @developers = [@developer]
+    end
+
     it 'runs test assignment code' do
-      [Developer.new].select do |you|
-        you.are.crazy
-        .and { your.skill_level is :high }
-        .and { you.are.not.in :plumbee }
-        .and { you.love 'ruby', 'rails' }
-        .and { want 'fun', 'money' }
-        .and.if you do
-          your work well
+      expect(
+        @developers.select do |you|
+          you.are.crazy
+          .and { your.skill_level is :high }
+          .and { you.are.not.in :plumbee }
+          .and { you.love 'ruby', 'rails' }
+          .and { want 'fun', 'money' }
+          .and.if you do
+            your work well
+          end
         end
-      end
+      ).to eq [@developer]
     end
   end
 end
