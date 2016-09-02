@@ -1,5 +1,4 @@
 class Developer
-  attr_accessor :skill_level
   def initialize
     #default values
     @crazy = true
@@ -28,14 +27,28 @@ class Developer
     self
   end
 
-  # allows call like 'skill_level.is :high'
+  # allows call like 'skill_level is :high'
   def is(*args)
-    self if equal_to_previous_call(*args)
+    args
   end
 
   # allows call like 'skill_level.not :low'
   def not(*args)
     self unless equal_to_previous_call(*args)
+  end
+
+  def and(&block)
+    if block_given?
+      instance_exec &block
+    else
+      self
+    end
+  end
+
+  def if(condition, &block)
+    if condition
+      instance_exec &block
+    end
   end
 
   #syntactic shugar makes call like 'work well' to run
@@ -48,6 +61,13 @@ class Developer
     :bad
   end
 
+  def method_missing(sym, *args, &block)
+    # method like yuor, her, his, its
+    if /^\w+[rs]$/ =~ sym.to_s && args[0]
+      self
+    end
+  end
+
   private
 
   # Method adds modified attr_reader for each instance variable.
@@ -58,6 +78,7 @@ class Developer
     method_names = instance_variables.map { |iv| iv.to_s[1..-1] }
     method_names.each do |method_name|
       self.class.send(:define_method, method_name) do |*args|
+
         reader_method_body(args, method_name)
       end
     end

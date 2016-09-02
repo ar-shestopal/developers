@@ -50,5 +50,27 @@ describe Developer do
         expect(@developer.skill_level.love).to be_truthy
       end
     end
+
+    context 'and' do
+      it 'runs in context of Developer class' do
+        you = @developer
+        check = you.crazy.and {
+          you.skill_level is :high
+        }
+        expect(check).to be_truthy
+      end
+    end
+
+    context 'if' do
+      it 'returns true in context of instance' do
+        you = @developer
+
+        check = you.and.if you do
+          your work well
+        end
+
+        expect(check).to be_truthy
+      end
+    end
   end
 end
